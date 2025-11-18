@@ -56,12 +56,12 @@ const AnalysisSummarySchema = new Schema<IAnalysisSummary>(
       type: Number,
       required: true
     },
-    blunders: {
+    excellent: {
       type: Number,
       required: true,
       default: 0
     },
-    mistakes: {
+    good: {
       type: Number,
       required: true,
       default: 0
@@ -71,12 +71,31 @@ const AnalysisSummarySchema = new Schema<IAnalysisSummary>(
       required: true,
       default: 0
     },
+    mistakes: {
+      type: Number,
+      required: true,
+      default: 0
+    },
+    blunders: {
+      type: Number,
+      required: true,
+      default: 0
+    },
     avgCpLoss: {
       type: Number,
       required: true
     },
     accuracy: {
+      type: Number,
+      required: true
+    },
+    performanceRating: {
       type: Number
+    },
+    missedMates: {
+      type: Number,
+      required: true,
+      default: 0
     }
   },
   { _id: false }

@@ -38,11 +38,15 @@ export interface IMoveAnalysis {
  */
 export interface IAnalysisSummary {
   totalMoves: number;
-  blunders: number;
-  mistakes: number;
+  excellent: number;
+  good: number;
   inaccuracies: number;
+  mistakes: number;
+  blunders: number;
   avgCpLoss: number;
-  accuracy?: number;
+  accuracy: number;              // Chess.com style accuracy % (0-100)
+  performanceRating?: number;    // Estimated playing strength for this game
+  missedMates: number;           // Count of missed mate opportunities
 }
 
 /**

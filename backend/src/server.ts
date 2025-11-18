@@ -3,6 +3,8 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { connectDatabase } from './config/database';
 import gamesRoutes from './routes/games.routes';
+import analysisRoutes from './routes/analysis.routes';
+import { shutdownStockfish } from './services/stockfish.service';
 
 // Load environment variables from .env file
 dotenv.config();
@@ -53,6 +55,9 @@ app.get('/api/status', (req: Request, res: Response) => {
 // Game routes
 app.use('/api/games', gamesRoutes);
 
+// Analysis routes
+app.use('/api/analysis', analysisRoutes);
+
 // 404 handler
 app.use((req: Request, res: Response) => {
   res.status(404).json({
@@ -87,3 +92,16 @@ const startServer = async () => {
 
 // Start the server
 startServer();
+
+// Graceful shutdown
+process.on('SIGINT', () => {
+  console.log('\n👋 Shutting down gracefully...');
+  shutdownStockfish();
+  process.exit(0);
+});
+
+process.on('SIGTERM', () => {
+  console.log('\n👋 Shutting down gracefully...');
+  shutdownStockfish();
+  process.exit(0);
+});
