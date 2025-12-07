@@ -24,6 +24,7 @@ export interface ClassifyMoveParams {
   mateInBefore?: number;
   mateInAfter?: number;
   allAlternativesWorse: boolean;
+  missedOpportunity: boolean;
 }
 
 /**
@@ -42,11 +43,17 @@ export function classifyMove(params: ClassifyMoveParams): MoveClassification {
     mateInBefore,
     mateInAfter,
     allAlternativesWorse,
+    missedOpportunity,
   } = params;
 
   // MISSED MATE: Had forced mate and lost it
   if (mateInBefore !== undefined && mateInAfter === undefined) {
     return 'missed_mate';
+  }
+
+  // MISS: Played an okay move but missed a significantly better opportunity
+  if (missedOpportunity) {
+    return 'miss';
   }
 
   // BRILLIANT: Material sacrifice that's best/nearly best in competitive position

@@ -193,6 +193,19 @@ export async function analyzeGame(
     // If this is the best move with nearly zero loss, consider all alternatives worse
     const allAlternativesWorse = isBestMove && expectedPointsLost < 0.005;
 
+    // Detect missed opportunity (miss):
+    // Best move creates significant advantage but player's move keeps position neutral
+    const bestMoveCreatesAdvantage =
+      rawEvalBefore > 150 || // +1.5 or better from current player's perspective
+      analysisBefore.mateIn !== undefined;
+    const playedMoveIsNeutral = Math.abs(rawEvalAfter) < 100; // Position stays ~equal
+    const moveWasntBad = expectedPointsLost < 0.05; // Less than inaccuracy threshold
+    const missedOpportunity =
+      bestMoveCreatesAdvantage &&
+      playedMoveIsNeutral &&
+      !isBestMove &&
+      moveWasntBad;
+
     // Check if this is a book move (only if still in book and in opening phase)
     let isBook = false;
     if (stillInBook && gamePhase === 'opening') {
@@ -220,6 +233,7 @@ export async function analyzeGame(
       mateInBefore: analysisBefore.mateIn,
       mateInAfter: analysisAfter.mateIn,
       allAlternativesWorse,
+      missedOpportunity,
     });
 
     // Determine if this is a critical moment
