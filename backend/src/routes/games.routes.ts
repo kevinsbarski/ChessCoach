@@ -1,5 +1,13 @@
 import { Router } from 'express';
-import { GamesController } from '../controllers/games.controller';
+import {
+  fetchCurrentMonth,
+  fetchSpecificMonth,
+  getArchives,
+} from '../controllers/games-fetch.controller';
+import {
+  getUserGames,
+  getGameById,
+} from '../controllers/games-query.controller';
 
 const router = Router();
 
@@ -9,14 +17,12 @@ const router = Router();
  */
 
 // Fetch games from Chess.com
-router.post('/fetch/:username', GamesController.fetchCurrentMonth);
-router.post('/fetch/:username/:year/:month', GamesController.fetchSpecificMonth);
+router.post('/fetch/:username', fetchCurrentMonth);
+router.post('/fetch/:username/:year/:month', fetchSpecificMonth);
+router.get('/archives/:username', getArchives);
 
-// Get available archives
-router.get('/archives/:username', GamesController.getArchives);
-
-// Get stored games
-router.get('/:username', GamesController.getUserGames);
-router.get('/by-id/:id', GamesController.getGameById);
+// Query stored games
+router.get('/by-id/:id', getGameById);
+router.get('/:username', getUserGames);
 
 export default router;

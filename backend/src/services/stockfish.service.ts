@@ -4,9 +4,9 @@ import { spawn, ChildProcess } from "child_process";
  * Depth presets for analysis
  */
 export const AnalysisDepth = {
-  fast: 15, // ~1-2 seconds per move
-  balanced: 20, // ~5-10 seconds per move
-  thorough: 25, // ~30+ seconds per move
+  fast: 20, // Minimum depth for reliable evaluation
+  balanced: 25, // Matches Lichess server analysis depth
+  thorough: 30, // Deep analysis for critical games
 } as const;
 
 export type DepthPreset = keyof typeof AnalysisDepth;
@@ -180,7 +180,8 @@ export class StockfishService {
           // Check if analysis complete
           if (line.startsWith("bestmove")) {
             const moveMatch = line.match(/bestmove (\S+)/);
-            if (moveMatch && !bestMove) {
+            // Always use the final bestmove from Stockfish (overwrites any pv-extracted move)
+            if (moveMatch) {
               bestMove = moveMatch[1];
             }
 

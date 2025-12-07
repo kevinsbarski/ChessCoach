@@ -1,6 +1,6 @@
 import { Types } from 'mongoose';
 import { DepthPreset } from './stockfish.service';
-import { getAnalysisService } from './analysis.service';
+import { getAnalysisService } from './analysis';
 
 /**
  * Job status types
