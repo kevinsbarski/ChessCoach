@@ -41,7 +41,10 @@ async function saveGames(
         timeControl: parsedGame.timeControl,
         timeClass: parsedGame.timeClass,
         whiteRating: parsedGame.whiteRating,
-        blackRating: parsedGame.blackRating
+        blackRating: parsedGame.blackRating,
+        // Opening data
+        opening: parsedGame.opening,
+        eco: parsedGame.eco
       });
 
       saved++;
