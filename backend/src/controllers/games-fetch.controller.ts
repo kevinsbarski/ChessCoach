@@ -36,7 +36,12 @@ async function saveGames(
         black: parsedGame.black,
         result: parsedGame.result,
         datePlayed: parsedGame.datePlayed,
-        analyzed: false
+        analyzed: false,
+        // Time control data
+        timeControl: parsedGame.timeControl,
+        timeClass: parsedGame.timeClass,
+        whiteRating: parsedGame.whiteRating,
+        blackRating: parsedGame.blackRating
       });
 
       saved++;

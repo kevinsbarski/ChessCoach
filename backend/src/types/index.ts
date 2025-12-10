@@ -14,6 +14,11 @@ export interface IGame extends Document {
   datePlayed: Date;
   analyzed: boolean;
   analyzedAt?: Date;
+  // Time control data
+  timeControl?: string;    // "300", "600+5", etc.
+  timeClass?: string;      // "bullet", "blitz", "rapid", "daily"
+  whiteRating?: number;
+  blackRating?: number;
   createdAt: Date;
   updatedAt: Date;
 }
