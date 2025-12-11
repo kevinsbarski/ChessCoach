@@ -108,7 +108,9 @@ export class ChessComService {
         return [];
       }
 
-      return games.map(game => this.parseGame(game, username));
+      // Sort by end_time descending (newest first) before parsing
+      const sortedGames = [...games].sort((a, b) => b.end_time - a.end_time);
+      return sortedGames.map(game => this.parseGame(game, username));
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.status === 404) {
         // No games for this month - return empty array
