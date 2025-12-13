@@ -22,7 +22,8 @@ import {
   IColorStats,
   IWeaknessSummary,
   GamePhase,
-  MoveClassification
+  MoveClassification,
+  IPerPlayerSummary
 } from '../../types';
 
 // ============================================
@@ -45,6 +46,34 @@ function calculateAccuracy(
   if (total === 0) return 0;
   const goodMoves = brilliant + great + best + excellent + good + book;
   return goodMoves / total;
+}
+
+/**
+ * Calculate accuracy from a player summary object
+ * Convenience wrapper for calculateAccuracy that takes the whole summary
+ */
+function getPlayerAccuracy(summary: IPerPlayerSummary): number {
+  return calculateAccuracy(
+    summary.brilliant,
+    summary.great,
+    summary.best,
+    summary.excellent,
+    summary.good,
+    summary.book,
+    summary.moves
+  );
+}
+
+/**
+ * Count win/loss/draw from game result based on player color
+ */
+function countGameResult(result: string, isWhite: boolean): { win: number; loss: number; draw: number } {
+  if (result === '1-0') {
+    return isWhite ? { win: 1, loss: 0, draw: 0 } : { win: 0, loss: 1, draw: 0 };
+  } else if (result === '0-1') {
+    return isWhite ? { win: 0, loss: 1, draw: 0 } : { win: 1, loss: 0, draw: 0 };
+  }
+  return { win: 0, loss: 0, draw: 1 };
 }
 
 /**

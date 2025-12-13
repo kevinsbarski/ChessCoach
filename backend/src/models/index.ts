@@ -5,4 +5,3 @@
 
 export { Game } from './Game';
 export { Analysis } from './Analysis';
-export { ChatHistory } from './ChatHistory';

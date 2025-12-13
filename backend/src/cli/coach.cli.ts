@@ -9,6 +9,7 @@ import { ChessComService } from '../services/chesscom.service';
 import { Game } from '../models/Game';
 import { analyzeGame } from '../services/analysis';
 import { deleteAnalysis } from '../services/analysis/stats-aggregator';
+import { saveGamesWithDuplicateCheck } from '../services/game.service';
 import { ICoachingSession } from '../types/coaching.types';
 
 /**
@@ -63,26 +64,6 @@ async function handleStatus(username: string): Promise<void> {
 }
 
 /**
- * Save parsed games to database
- */
-async function saveGamesToDb(username: string, games: any[]): Promise<{ saved: number; duplicates: number }> {
-  let saved = 0;
-  let duplicates = 0;
-
-  for (const game of games) {
-    const exists = await Game.findOne({ gameId: game.gameId });
-    if (exists) {
-      duplicates++;
-      continue;
-    }
-    await Game.create({ ...game, chessComUsername: username.toLowerCase() });
-    saved++;
-  }
-
-  return { saved, duplicates };
-}
-
-/**
  * Handle /fetch command - Fetch games from Chess.com
  */
 async function handleFetch(username: string, count: number = 50): Promise<void> {
@@ -91,7 +72,7 @@ async function handleFetch(username: string, count: number = 50): Promise<void> 
   try {
     const games = await ChessComService.fetchCurrentMonthGames(username);
     const gamesToSave = games.slice(0, count);
-    const { saved, duplicates } = await saveGamesToDb(username, gamesToSave);
+    const { saved, duplicates } = await saveGamesWithDuplicateCheck(username, gamesToSave);
 
     console.log(`✓ Found ${saved} new games (${duplicates} already in database)\n`);
   } catch (error) {

@@ -12,32 +12,7 @@ import {
   IChatMessage
 } from './index';
 
-/**
- * LLM Provider Interface
- * Abstraction for different LLM providers (OpenAI, Anthropic, etc.)
- */
-export interface ILLMProvider {
-  /**
-   * Send chat messages and get a complete response
-   * @param messages - Array of chat messages (conversation history)
-   * @param systemPrompt - System prompt that defines the assistant's behavior
-   * @returns Promise resolving to the assistant's response
-   */
-  chat(messages: IChatMessage[], systemPrompt: string): Promise<string>;
-
-  /**
-   * Stream chat messages with real-time chunks
-   * @param messages - Array of chat messages (conversation history)
-   * @param systemPrompt - System prompt that defines the assistant's behavior
-   * @param onChunk - Callback function called for each chunk of the response
-   * @returns Promise resolving to the complete response
-   */
-  streamChat(
-    messages: IChatMessage[],
-    systemPrompt: string,
-    onChunk: (chunk: string) => void
-  ): Promise<string>;
-}
+// Note: ILLMProvider interface is defined in services/coaching/providers/llm-provider.interface.ts
 
 /**
  * Coaching Context

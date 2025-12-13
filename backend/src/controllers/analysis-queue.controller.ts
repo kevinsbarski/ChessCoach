@@ -35,16 +35,7 @@ export const queueAnalysis = async (req: Request, res: Response) => {
       });
     }
 
-    // Validate depth
-    const validDepths: DepthPreset[] = ['fast', 'balanced', 'thorough'];
-    if (!validDepths.includes(depth)) {
-      return res.status(400).json({
-        error: 'Invalid depth',
-        message: 'Depth must be one of: fast, balanced, thorough',
-      });
-    }
-
-    // Add to queue
+    // Add to queue (depth type is enforced by TypeScript)
     const queue = getAnalysisQueue();
     const job = queue.addJob(gameObjectId, depth);
 
