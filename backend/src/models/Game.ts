@@ -63,6 +63,22 @@ const GameSchema = new Schema<IGame>(
     // When analysis was completed
     analyzedAt: {
       type: Date
+    },
+
+    // Time control data
+    timeControl: {
+      type: String
+    },
+    timeClass: {
+      type: String,
+      enum: ['bullet', 'blitz', 'rapid', 'daily', 'classical'],
+      index: true
+    },
+    whiteRating: {
+      type: Number
+    },
+    blackRating: {
+      type: Number
     }
   },
   {
@@ -74,6 +90,7 @@ const GameSchema = new Schema<IGame>(
 // Create compound index for efficient queries
 GameSchema.index({ chessComUsername: 1, datePlayed: -1 });
 GameSchema.index({ chessComUsername: 1, analyzed: 1 });
+GameSchema.index({ chessComUsername: 1, timeClass: 1, datePlayed: -1 });
 
 // Export the model
 export const Game = mongoose.model<IGame>('Game', GameSchema);
