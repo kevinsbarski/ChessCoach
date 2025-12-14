@@ -19,6 +19,9 @@ export interface IGame extends Document {
   timeClass?: string;      // "bullet", "blitz", "rapid", "daily"
   whiteRating?: number;
   blackRating?: number;
+  // Opening data (extracted from PGN headers)
+  opening?: string;        // "Sicilian Defense: Najdorf Variation"
+  eco?: string;            // "B90"
   createdAt: Date;
   updatedAt: Date;
 }
@@ -152,6 +155,145 @@ export interface IChatMessage {
   role: 'user' | 'assistant';
   content: string;
   timestamp: Date;
+}
+
+// ============================================
+// Advanced Aggregation Types (for coaching)
+// ============================================
+
+/**
+ * Opening Statistics
+ * Performance data for a specific opening
+ */
+export interface IOpeningStats {
+  eco: string;           // ECO code (e.g., "B90")
+  name: string;          // Opening name (e.g., "Sicilian Defense: Najdorf")
+  games: number;         // Number of games played
+  wins: number;
+  draws: number;
+  losses: number;
+  winRate: number;       // 0.0 - 1.0
+  avgAccuracy: number;   // Average accuracy in this opening
+  avgEPL: number;        // Average expected points lost
+}
+
+/**
+ * Opening Repertoire
+ * All openings played by a user
+ */
+export interface IOpeningRepertoire {
+  asWhite: IOpeningStats[];
+  asBlack: IOpeningStats[];
+}
+
+/**
+ * Phase Performance Stats
+ * Stats for a specific game phase
+ */
+export interface IPhaseStats {
+  phase: GamePhase;
+  totalMoves: number;
+  avgEPL: number;        // Average expected points lost
+  accuracy: number;      // % of good+ moves
+  blunders: number;
+  mistakes: number;
+  inaccuracies: number;
+  brilliantMoves: number;
+}
+
+/**
+ * Phase Performance Summary
+ */
+export interface IPhasePerformance {
+  opening: IPhaseStats;
+  middlegame: IPhaseStats;
+  endgame: IPhaseStats;
+}
+
+/**
+ * Time Control Performance Stats
+ */
+export interface ITimeControlStats {
+  timeClass: string;     // "bullet", "blitz", "rapid", "daily", "classical"
+  games: number;
+  wins: number;
+  draws: number;
+  losses: number;
+  winRate: number;
+  avgAccuracy: number;
+  blunderRate: number;   // Blunders per game
+  avgEPL: number;
+}
+
+/**
+ * Time Control Performance Summary
+ */
+export interface ITimeControlPerformance {
+  bullet?: ITimeControlStats;
+  blitz?: ITimeControlStats;
+  rapid?: ITimeControlStats;
+  daily?: ITimeControlStats;
+  classical?: ITimeControlStats;
+}
+
+/**
+ * Trend Period
+ * Stats for a specific time period
+ */
+export interface ITrendPeriod {
+  startDate: Date;
+  endDate: Date;
+  games: number;
+  avgAccuracy: number;
+  blunderRate: number;
+  avgEPL: number;
+  winRate: number;
+}
+
+/**
+ * Trend Analysis
+ */
+export interface ITrendAnalysis {
+  periods: ITrendPeriod[];
+  trend: 'improving' | 'declining' | 'stable';
+  improvementRate: number;  // % change in accuracy per period
+}
+
+/**
+ * Color Performance Stats
+ */
+export interface IColorStats {
+  games: number;
+  wins: number;
+  draws: number;
+  losses: number;
+  winRate: number;
+  avgAccuracy: number;
+  avgEPL: number;
+}
+
+/**
+ * Color Performance Summary
+ */
+export interface IColorPerformance {
+  asWhite: IColorStats;
+  asBlack: IColorStats;
+}
+
+/**
+ * Weakness Summary
+ * Top-level coaching insights
+ */
+export interface IWeaknessSummary {
+  weakestOpening: { eco: string; name: string; winRate: number } | null;
+  strongestOpening: { eco: string; name: string; winRate: number } | null;
+  weakestPhase: GamePhase;
+  strongestPhase: GamePhase;
+  worstTimeControl: string | null;
+  bestTimeControl: string | null;
+  trend: 'improving' | 'declining' | 'stable';
+  colorStruggle: 'white' | 'black' | 'none';
+  topIssues: string[];   // Human-readable coaching points
 }
 
 /**

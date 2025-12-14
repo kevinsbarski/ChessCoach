@@ -79,6 +79,15 @@ const GameSchema = new Schema<IGame>(
     },
     blackRating: {
       type: Number
+    },
+
+    // Opening data (extracted from PGN headers)
+    opening: {
+      type: String
+    },
+    eco: {
+      type: String,
+      index: true  // Index for aggregation queries
     }
   },
   {
@@ -91,6 +100,7 @@ const GameSchema = new Schema<IGame>(
 GameSchema.index({ chessComUsername: 1, datePlayed: -1 });
 GameSchema.index({ chessComUsername: 1, analyzed: 1 });
 GameSchema.index({ chessComUsername: 1, timeClass: 1, datePlayed: -1 });
+GameSchema.index({ chessComUsername: 1, eco: 1 });  // For opening repertoire queries
 
 // Export the model
 export const Game = mongoose.model<IGame>('Game', GameSchema);

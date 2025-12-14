@@ -4,57 +4,8 @@
  */
 
 import { Request, Response } from 'express';
-import { Game } from '../models';
-import { ChessComService, ParsedGame } from '../services/chesscom.service';
-
-/**
- * Helper: Save games to database (avoiding duplicates)
- */
-async function saveGames(
-  username: string,
-  parsedGames: ParsedGame[]
-): Promise<{ saved: number; duplicates: number }> {
-  let saved = 0;
-  let duplicates = 0;
-
-  for (const parsedGame of parsedGames) {
-    try {
-      // Check if game already exists
-      const existingGame = await Game.findOne({ gameId: parsedGame.gameId });
-
-      if (existingGame) {
-        duplicates++;
-        continue;
-      }
-
-      // Create new game document
-      await Game.create({
-        chessComUsername: username,
-        gameId: parsedGame.gameId,
-        pgn: parsedGame.pgn,
-        white: parsedGame.white,
-        black: parsedGame.black,
-        result: parsedGame.result,
-        datePlayed: parsedGame.datePlayed,
-        analyzed: false,
-        // Time control data
-        timeControl: parsedGame.timeControl,
-        timeClass: parsedGame.timeClass,
-        whiteRating: parsedGame.whiteRating,
-        blackRating: parsedGame.blackRating
-      });
-
-      saved++;
-    } catch (error) {
-      console.error(`Error saving game ${parsedGame.gameId}:`, error);
-      // Continue with next game even if one fails
-    }
-  }
-
-  console.log(`Saved ${saved} new games, ${duplicates} duplicates skipped`);
-
-  return { saved, duplicates };
-}
+import { ChessComService } from '../services/chesscom.service';
+import { saveGamesWithDuplicateCheck } from '../services/game.service';
 
 /**
  * Fetch and store games from Chess.com for current month
@@ -85,7 +36,7 @@ export async function fetchCurrentMonth(req: Request, res: Response): Promise<vo
     }
 
     // Save games to database (avoiding duplicates)
-    const result = await saveGames(username, parsedGames);
+    const result = await saveGamesWithDuplicateCheck(username, parsedGames);
 
     res.json({
       message: 'Games fetched successfully',
@@ -142,7 +93,7 @@ export async function fetchSpecificMonth(req: Request, res: Response): Promise<v
     }
 
     // Save games to database
-    const result = await saveGames(username, parsedGames);
+    const result = await saveGamesWithDuplicateCheck(username, parsedGames);
 
     res.json({
       message: 'Games fetched successfully',

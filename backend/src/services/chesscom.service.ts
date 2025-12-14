@@ -49,6 +49,8 @@ export interface ParsedGame {
   timeClass: string;
   whiteRating: number;
   blackRating: number;
+  opening?: string;  // Opening name from PGN header
+  eco?: string;      // ECO code from PGN header
 }
 
 /**
@@ -57,6 +59,17 @@ export interface ParsedGame {
  */
 export class ChessComService {
   private static readonly BASE_URL = 'https://api.chess.com/pub';
+
+  /**
+   * Extract a specific header value from PGN
+   * PGN headers are in format: [HeaderName "Value"]
+   */
+  private static extractPgnHeader(pgn: string, headerName: string): string | undefined {
+    // Match pattern: [HeaderName "Value"]
+    const regex = new RegExp(`\\[${headerName}\\s+"([^"]*)"\\]`, 'i');
+    const match = pgn.match(regex);
+    return match ? match[1] : undefined;
+  }
 
   /**
    * Get list of all available game archives for a user
@@ -95,7 +108,9 @@ export class ChessComService {
         return [];
       }
 
-      return games.map(game => this.parseGame(game, username));
+      // Sort by end_time descending (newest first) before parsing
+      const sortedGames = [...games].sort((a, b) => b.end_time - a.end_time);
+      return sortedGames.map(game => this.parseGame(game, username));
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.status === 404) {
         // No games for this month - return empty array
@@ -177,6 +192,10 @@ export class ChessComService {
     // Convert Unix timestamp to Date
     const datePlayed = new Date(game.end_time * 1000);
 
+    // Extract opening info from PGN headers
+    const opening = this.extractPgnHeader(game.pgn, 'Opening');
+    const eco = this.extractPgnHeader(game.pgn, 'ECO');
+
     return {
       gameId,
       pgn: game.pgn,
@@ -187,7 +206,9 @@ export class ChessComService {
       timeControl: game.time_control,
       timeClass: game.time_class,
       whiteRating: game.white.rating,
-      blackRating: game.black.rating
+      blackRating: game.black.rating,
+      opening,
+      eco
     };
   }
 

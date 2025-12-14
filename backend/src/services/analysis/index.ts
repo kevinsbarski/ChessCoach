@@ -13,6 +13,16 @@ export { classifyMove, ClassifyMoveParams } from './move-classifier';
 export { analyzeGame } from './game-analyzer';
 export { getAnalysis, getUserSummary, deleteAnalysis } from './stats-aggregator';
 
+// Advanced aggregation exports (for coaching)
+export {
+  getOpeningRepertoire,
+  getPhasePerformance,
+  getTimeControlPerformance,
+  getTrendOverTime,
+  getColorPerformance,
+  getWeaknessSummary
+} from './advanced-aggregator';
+
 // Import for the class wrapper
 import { analyzeGame } from './game-analyzer';
 import { getAnalysis, getUserSummary, deleteAnalysis } from './stats-aggregator';

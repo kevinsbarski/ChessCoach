@@ -1,6 +1,7 @@
 import express, { Express, Request, Response } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import mongoose from 'mongoose';
 import { connectDatabase } from './config/database';
 import gamesRoutes from './routes/games.routes';
 import analysisRoutes from './routes/analysis.routes';
@@ -44,11 +45,14 @@ app.get('/', (req: Request, res: Response) => {
 
 // API status endpoint
 app.get('/api/status', (req: Request, res: Response) => {
+  const dbState = mongoose.connection.readyState;
+  const dbStatus = dbState === 1 ? 'connected' : dbState === 2 ? 'connecting' : 'disconnected';
+
   res.json({
     api: 'Chess Coach Backend',
     version: '1.0.0',
     status: 'operational',
-    database: 'connected' // TODO: Check actual DB connection
+    database: dbStatus
   });
 });
 

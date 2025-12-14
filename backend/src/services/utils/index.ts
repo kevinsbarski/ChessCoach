@@ -2,7 +2,6 @@
  * Utils Module
  *
  * Barrel export for all utility functions and constants.
- * Provides backward compatibility with the original lichess-utils.ts imports.
  */
 
 // Constants and thresholds
@@ -30,7 +29,7 @@ export {
   isPositionLosing,
 } from './position-utils';
 
-// Opening book utilities (Lichess API)
+// Opening book utilities (local Polyglot book)
 export {
   isBookPosition,
   isBookMove,

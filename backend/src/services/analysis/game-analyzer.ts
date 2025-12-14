@@ -210,8 +210,10 @@ export async function analyzeGame(
     let isBook = false;
     if (stillInBook && gamePhase === 'opening') {
       try {
-        await rateLimitDelay(); // Respect Lichess rate limits
-        isBook = await isBookMove(fenBefore, move.san);
+        // Local Polyglot book lookup - no rate limiting needed
+        // UCI format: "e2e4" or "e7e8q" for promotions
+        const uciMove = move.from + move.to + (move.promotion || '');
+        isBook = await isBookMove(fenBefore, uciMove);
         if (!isBook) {
           stillInBook = false; // Once we leave book, don't check anymore
           console.log(`  Left opening book at move ${moveNumber}`);

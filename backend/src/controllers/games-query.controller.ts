@@ -13,7 +13,7 @@ import { Game } from '../models';
 export async function getUserGames(req: Request, res: Response): Promise<void> {
   try {
     const { username } = req.params;
-    const { analyzed, limit = '20', skip = '0', timeClass } = req.query;
+    const { analyzed, limit = '20', skip = '0' } = req.query;
 
     if (!username) {
       res.status(400).json({ error: 'Username is required' });
@@ -25,11 +25,6 @@ export async function getUserGames(req: Request, res: Response): Promise<void> {
 
     if (analyzed !== undefined) {
       filter.analyzed = analyzed === 'true';
-    }
-
-    if (timeClass) {
-      // Note: We don't store timeClass in the Game model yet
-      // This can be added if needed
     }
 
     // Fetch games from database

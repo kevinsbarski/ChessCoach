@@ -7,10 +7,10 @@
 | Game Fetching (Chess.com API) | Complete |
 | Stockfish Integration | Complete |
 | Move Classification (11 categories) | Complete |
-| Book Move Detection (Lichess API) | Complete |
+| Book Move Detection (Local Polyglot) | Complete |
 | Per-Player Statistics | Complete |
 | Analysis Queue System | Complete |
-| LLM Coaching Layer | Not Started |
+| LLM Coaching Layer | Complete |
 
 ---
 
@@ -23,7 +23,7 @@
 | best | Engine's top move | EPL <0.1% |
 | excellent | Nearly optimal | EPL 0-2% |
 | good | Solid move | EPL 2-5% |
-| book | Opening theory | Lichess master DB |
+| book | Opening theory | Local Polyglot book |
 | inaccuracy | Suboptimal | EPL 5-10% |
 | mistake | Significant error | EPL 10-20% |
 | miss | Missed tactic | Best gives +1.5, played stays neutral |
@@ -51,16 +51,16 @@
 | 13 | `server.ts` | Core | 107 |
 | 14 | `services/utils/evaluation-utils.ts` | Utility | 98 |
 | 15 | `services/analysis/stats-aggregator.ts` | Analysis | 95 |
-| 16 | `controllers/games-query.controller.ts` | Controller | 91 |
+| 16 | `controllers/games-query.controller.ts` | Controller | 87 |
 | 17 | `models/Game.ts` | Model | 79 |
-| 18 | `models/ChatHistory.ts` | Model | 65 |
+| 18 | `services/game.service.ts` | Service | 59 |
 | 19 | `services/analysis/index.ts` | Analysis | 52 |
 | 20 | `services/utils/thresholds.ts` | Utility | 50 |
 | 21 | `config/database.ts` | Config | 49 |
 | 22 | `services/utils/index.ts` | Utility | 39 |
 | 23 | `routes/analysis.routes.ts` | Routes | 32 |
 | 24 | `routes/games.routes.ts` | Routes | 28 |
-| 25 | `models/index.ts` | Model | 8 |
+| 25 | `models/index.ts` | Model | 5 |
 
 ---
 
@@ -69,12 +69,12 @@
 | Category | Files | Total Lines |
 |----------|-------|-------------|
 | Analysis | 4 | 654 |
-| Services | 3 | 730 |
-| Controllers | 4 | 570 |
+| Services | 4 | 789 |
+| Controllers | 4 | 523 |
 | Utility | 5 | 430 |
-| Models | 4 | 395 |
+| Models | 3 | 327 |
 | Types | 1 | 162 |
-| Core | 1 | 107 |
+| Core | 1 | 110 |
 | Routes | 2 | 60 |
 | Config | 1 | 49 |
 
@@ -93,7 +93,6 @@ backend/src/
 │   └── games-query.controller.ts
 ├── models/
 │   ├── Analysis.ts
-│   ├── ChatHistory.ts
 │   ├── Game.ts
 │   └── index.ts
 ├── routes/
@@ -107,11 +106,12 @@ backend/src/
 │   │   └── index.ts
 │   ├── utils/
 │   │   ├── evaluation-utils.ts   # Win probability math
-│   │   ├── opening-book.ts       # Lichess API integration
+│   │   ├── opening-book.ts       # Local Polyglot book lookup
 │   │   ├── position-utils.ts     # Material, sacrifice, phase
 │   │   ├── thresholds.ts         # Classification thresholds
 │   │   └── index.ts
 │   ├── chesscom.service.ts       # Chess.com API
+│   ├── game.service.ts           # Game save utilities
 │   ├── queue.service.ts          # Bull queue management
 │   └── stockfish.service.ts      # Stockfish engine wrapper
 ├── types/
@@ -121,4 +121,4 @@ backend/src/
 
 ---
 
-**Total: 25 files, 3,157 lines of TypeScript**
+**Total: 25 files, ~3,100 lines of TypeScript**
